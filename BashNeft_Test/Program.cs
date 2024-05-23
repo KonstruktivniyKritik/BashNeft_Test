@@ -33,7 +33,7 @@ internal class Program
 		}
 
 		//Ищем группы
-        List<List<Tuple<int,int>>> AllGroups = new List<List<Tuple<int, int>>>();
+        List<HashSet<Tuple<int,int>>> AllGroups = new List<HashSet<Tuple<int, int>>>();
 		for (int i = 0; i < BoardXDim; i++)
 		{
 			for (int j = 0; j < BoardYDim; j++)
@@ -47,7 +47,7 @@ internal class Program
 		Print2DArray<bool>(Board, AllGroups);
 	}
 
-	public static void DigGroup(int i, int j, List<List<Tuple<int, int>>> allgroups)
+	public static void DigGroup(int i, int j, List<HashSet<Tuple<int, int>>> allgroups)
 	{
 		Tuple<int, int> Start = new Tuple<int, int>(i, j);
 		//Смотрим, принадлежит ли точка Start к какой либо  уже обнаруженной группе группе
@@ -55,14 +55,14 @@ internal class Program
 			if (checkgroup.Contains(Start))
 				return;
 
-		//Если нет, то значит точка образует новую группу
-        List<Tuple<int, int>> NewGroup = new List<Tuple<int, int>>();
+        //Если нет, то значит точка образует новую группу
+        HashSet<Tuple<int, int>> NewGroup = new HashSet<Tuple<int, int>>();
 		//алгоритм "раскопки" групп. 
 		DigginIn(NewGroup, i, j);
 		allgroups.Add(NewGroup);
 	}
 
-    public static void DigginIn(List<Tuple<int, int>> actualgroup, int i, int j)
+    public static void DigginIn(HashSet<Tuple<int, int>> actualgroup, int i, int j)
 	{
 		//Рекурсивный алгоритм для объединения групп
 		//От начальной точки мы смотрим на соседние точки:вверх,вниз,влево,вправо.
@@ -74,10 +74,10 @@ internal class Program
 		//то рекурсия прерывается.
 
 		//прерывание рекурсии если уже были в этой точке
-		if (actualgroup.Contains(new Tuple<int, int>(i, j)))
+		Tuple<int, int> Point = new Tuple<int, int>(i, j);
+		if (!actualgroup.Add(Point))
 			return;
 
-		actualgroup.Add(new Tuple<int,int> (i, j));
 		if (i-1 >= 0)
 			if (Board[i - 1, j] == true)
 			{
@@ -100,7 +100,7 @@ internal class Program
 			}
 	}
 
-    public static void Print2DArray<T>(T[,] matrix, List<List<Tuple<int, int>>> allgroups)
+    public static void Print2DArray<T>(T[,] matrix, List<HashSet<Tuple<int, int>>> allgroups)
 	{
 		//Печать двумерного массива, разбавленная цветами.
 		//По желанию можно сделать вывод как указано в тестовом задании
